@@ -64,33 +64,31 @@ int main() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     Shader shader("../shaders/texture.vert", "../shaders/animatedTexture.frag");
-    Shader bgShader("../shaders/texture.vert", "../shaders/animatedTexture.frag");
 
-    GLuint backgroundTexId = loadTexture("../Textures/Backgrounds/1_game_background/1_game_background.png");
-    GLuint playerTexId = loadTexture("../Textures/Characters/Shark/Idle.png");
+    GLuint playerSlowTexId = loadTexture("../Textures/Characters/Shark/Walk.png");
+    GLuint playerForwardTexId = loadTexture("../Textures/Characters/Shark/Attack.png");
+    GLuint playerBackwardsTexId = loadTexture("../Textures/Characters/Shark/Idle.png");
+    GLuint playerHurtTexId = loadTexture("../Textures/Characters/Shark/Hurt.png");
     GLuint fishTexId = loadTexture("../Textures/Fish/4.png");
     GLuint trashTexId = loadTexture("../Textures/Objects/trash.png");
 
     std::vector<GLuint> texIdVector;
-    getBackgroundTexIds(2, &texIdVector);
+    getBackgroundTexIds(1, &texIdVector);
     std::vector<BackgroundLayer*> bgLayers;
     int numberOfLayers = (int) texIdVector.size();
     for (int i = 0; i < numberOfLayers; ++i) {
         float step = (float) i * (playerMoveSpeed / (float) (numberOfLayers - 1));
         auto *bgLayer = new BackgroundLayer();
-        bgLayer->setShader(&bgShader);
+        bgLayer->setShader(&shader);
         bgLayer->initialize(texIdVector[i], screenWidth, screenHeight, step, 0.01);
         bgLayers.push_back(bgLayer);
     }
 
-//    Sprite background;
-//    background.setShader(&shader);
-//    background.initialize(backgroundTexId, glm::vec3(800.0, 450.0, 0.0), glm::vec3(screenWidth, screenHeight, 1.0),
-//                          0.0, screenWidth, screenHeight, 1, 1, 0, 1, 1);
-
     Player player;
     player.setShader(&shader);
-    player.initialize(playerTexId, glm::vec3(200.0, 450.0, 0.0), glm::vec3(100.0, 100.0, 1.0), 0.0, screenWidth, screenHeight, 1, 4, 0, 0.15, 0.01);
+    player.initialize(playerSlowTexId, playerForwardTexId, playerBackwardsTexId, playerHurtTexId,
+                      glm::vec3(200.0, 450.0, 0.0), glm::vec3(100.0, 100.0, 1.0), 0.0,
+                      screenWidth, screenHeight, 1, 4, 0, 0.15, 0.01);
 
     std::vector<Fish*> fishes;
     for (int i = 0; i < 5; ++i) {
@@ -110,16 +108,14 @@ int main() {
 
     int playerScore = 0;
 
-    glm::mat4 projection = glm::ortho(0.0f,1600.0f,0.0f,900.0f,-1.0f,1.0f);
-
     shader.use();
+
+    glActiveTexture(GL_TEXTURE0);
+
+    glm::mat4 projection = glm::ortho(0.0f,1600.0f,0.0f,900.0f,-1.0f,1.0f);
     shader.setMat4("projection", glm::value_ptr(projection));
 
-    bgShader.use();
-    bgShader.setMat4("projection", glm::value_ptr(projection));
-
     shader.setInt("texBuffer", 0);
-    bgShader.setInt("texBuffer", 1);
 
     // game loop
     while(!glfwWindowShouldClose(window)) {
@@ -133,13 +129,10 @@ int main() {
         glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-//        background.draw();
-        bgShader.use();
         for (auto & bgLayer : bgLayers) {
             bgLayer->draw();
         }
 
-        shader.use();
         player.draw();
 
         for (auto & vectorFish : fishes) {
@@ -152,7 +145,7 @@ int main() {
 
         for (auto & trash : trashVector) {
             if (player.collidesWith(trash)) {
-                // TODO - quando player colide com a lata
+                player.setHurt();
             }
             trash->draw();
         }
@@ -179,7 +172,7 @@ void processInput(GLFWwindow * window, Player * player) {
     wasdMap[GLFW_KEY_A] = glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS;
     wasdMap[GLFW_KEY_S] = glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS;
     wasdMap[GLFW_KEY_D] = glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS;
-    player->move(10.0f, wasdMap);
+    player->move(5.0f, wasdMap);
 }
 
 void error_callback(int error, const char *msg) {

@@ -11,7 +11,6 @@ public:
     BackgroundLayer() = default;
     ~BackgroundLayer();
     void initialize(GLuint texId_, int screenWidth_, int screenHeight_, float step_, float movementInterval_);
-    void draw() override;
 private:
     void update() override;
     void setVAO() override;

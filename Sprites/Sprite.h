@@ -13,7 +13,7 @@ public:
                             int rows, int columns, int startingRow,
                             double animationInterval, double movementInterval);
 
-    virtual void draw();
+    void draw();
     void terminate();
     inline void setShader(Shader *shader_) {
         this->shader = shader_;
@@ -23,6 +23,7 @@ public:
     float getMaxY() const;
     float getMinY() const;
     bool collidesWith(Sprite *that);
+    void changeTexture(GLuint newTexId, int rows, int columns, int startingRow, float newAnimationInterval);
     int screenWidth;
     int screenHeight;
     GLuint texId;

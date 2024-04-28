@@ -51,17 +51,6 @@ void BackgroundLayer::update() {
     Sprite::update();
 }
 
-void BackgroundLayer::draw() {
-    this->update();
-
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, texId);
-    glBindVertexArray(VAO);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glBindVertexArray(0);
-}
-
 void BackgroundLayer::setVAO() {
     GLfloat vertices[] = {
             //x     y    z    r    g    b    s    t

@@ -33,7 +33,6 @@ void Sprite::initialize(GLuint texId_, glm::vec3 pos_, glm::vec3 scale_, float a
 void Sprite::draw() {
     this->update();
 
-    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texId);
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -131,4 +130,16 @@ void Sprite::applyModelTransformations() {
     model = glm::rotate(model, glm::radians(angle), glm::vec3(0.0, 0.0, 1.0));
     model = glm::scale(model, scale);
     this->shader->setMat4("model", glm::value_ptr(model));
+}
+
+void Sprite::changeTexture(GLuint newTexId, int rows, int columns, int startingRow, float newAnimationInterval) {
+    this->texId = newTexId;
+    this->spriteRows = rows;
+    this->spriteColumns = columns;
+    this->currentRow = startingRow;
+    if (this->currentColumn >= columns) {
+        this->currentColumn = 0;
+    }
+    this->animationInterval = newAnimationInterval;
+    this->setVAO();
 }
