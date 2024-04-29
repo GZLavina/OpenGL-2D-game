@@ -18,7 +18,6 @@ bool TextRenderer::load(std::string fontPath, unsigned int fontSize) {
         std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
         return false;
     }
-    std::cout << "LOADED " << fontPath << " WITH SIZE " + std::to_string(fontSize) << std::endl;
 
     // disable byte-alignment restriction
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);

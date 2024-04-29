@@ -103,7 +103,7 @@ float Sprite::getMinY() const {
     return this->pos.y - (this->height/2);
 }
 
-bool Sprite::collidesWith(Sprite *that) {
+bool Sprite::collidesWith(Sprite *that) const {
     return (this->getMaxX() >= that->getMinX() && that->getMaxX() >= this->getMinX()) &&
            (this->getMaxY() >= that->getMinY() && that->getMaxY() >= this->getMinY());
 }

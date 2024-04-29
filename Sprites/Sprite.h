@@ -22,7 +22,7 @@ public:
     float getMinX() const;
     float getMaxY() const;
     float getMinY() const;
-    bool collidesWith(Sprite *that);
+    bool collidesWith(Sprite *that) const;
     void changeTexture(GLuint newTexId, int rows, int columns, int startingRow, float newAnimationInterval);
     int screenWidth;
     int screenHeight;
