@@ -17,6 +17,8 @@ public:
     void setBackward();
     void setHurt();
     int getLives() const;
+    void setDead();
+    bool isDead() const;
 private:
     void update() override;
     void moveRight(float distance);
@@ -32,6 +34,7 @@ private:
     double cannotGetHurtInterval;
     bool isHurt;
     int lives;
+    bool dead;
 };
 
 

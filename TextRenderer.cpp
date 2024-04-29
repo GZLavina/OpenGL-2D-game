@@ -1,6 +1,8 @@
 
 #include "TextRenderer.h"
 
+// CODE MOSTLY TAKEN FROM https://learnopengl.com/In-Practice/Text-Rendering
+
 bool TextRenderer::load(std::string fontPath, unsigned int fontSize) {
     // Loading text
     if (FT_Init_FreeType(&ft)) {

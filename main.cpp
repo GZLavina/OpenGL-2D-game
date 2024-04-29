@@ -16,7 +16,6 @@
 #include <vector>
 #include <filesystem>
 #include "GameValues.h"
-#include <map>
 #include <ft2build.h>
 #include FT_FREETYPE_H
 #include "TextRenderer.h"
@@ -99,6 +98,8 @@ int main() {
             {uglyFishTexId, glm::vec3(100.0f, 40.68f, 1.0f)},
     };
 
+    GLuint heartTexId = loadTexture("../Textures/Objects/heart2.png");
+
     std::vector<GLuint> texIdVector;
     getBackgroundTexIds(1, &texIdVector);
     std::vector<BackgroundLayer*> bgLayers;
@@ -133,11 +134,14 @@ int main() {
         trashVector.push_back(trash);
     }
 
+    Sprite heartIcon;
+    heartIcon.setShader(&shader);
+    heartIcon.initialize(heartTexId,
+                         glm::vec3(0.05f * (float) screenWidth, (float) screenHeight - (0.08f * (float) screenHeight), 0.0f),
+                         glm::vec3(80.0f, 80.0f, 1.0f), 0.0, screenWidth, screenHeight, 1, 1, 0, 1, 1);
+
     TextRenderer textRenderer(textShader);
     textRenderer.load("../Fonts/MAIAN.TTF", 56);
-
-    // player score does not need to be calculated by the player object
-    int playerScore = 0;
 
     glActiveTexture(GL_TEXTURE0);
 
@@ -150,6 +154,9 @@ int main() {
     textShader.use();
     textShader.setMat4("projection", glm::value_ptr(projection));
     textShader.setInt("texBuffer", 0);
+
+    // player score does not need to be calculated by the player object
+    int playerScore = 0;
 
     // game loop
     while(!glfwWindowShouldClose(window)) {
@@ -174,7 +181,7 @@ int main() {
         player.draw();
 
         for (auto & vectorFish : fishes) {
-            if (player.collidesWith(vectorFish)) {
+            if (player.collidesWith(vectorFish) && !player.isDead()) {
                 vectorFish->reset();
                 playerScore++;
             }
@@ -191,14 +198,17 @@ int main() {
         //draw last layer
         bgLayers.back()->draw();
 
+        heartIcon.draw();
+
         //Draw text
         textShader.use();
 
         if (player.getLives() <= 0) {
-            textRenderer.renderText("GAME OVER", ((float) screenWidth / 2.0f) - ((float) screenWidth * 0.10f), (float) screenHeight / 2.0f, 1.0, glm::vec3(0.0f, 0.0f, 0.0f));
+            player.setDead();
+            textRenderer.renderText("GAME OVER", ((float) screenWidth / 2.0f) - ((float) screenWidth * 0.11f), (float) screenHeight / 2.0f, 1.0, glm::vec3(0.0f, 0.0f, 0.0f));
         }
 
-        textRenderer.renderText(std::to_string(player.getLives()), 0.05f * (float) screenWidth, (float) screenHeight - (0.1f * (float) screenHeight), 1.0f, glm::vec3(0.0f, 0.0f, 0.0f));
+        textRenderer.renderText("x " + std::to_string(player.getLives()), 0.09f * (float) screenWidth, (float) screenHeight - (0.1f * (float) screenHeight), 1.0f, glm::vec3(0.0f, 0.0f, 0.0f));
         textRenderer.renderText("Score: " + std::to_string(playerScore), (float) screenWidth - (0.15f * (float) screenWidth), (float) screenHeight - (0.1f * (float) screenHeight), 1.0f, glm::vec3(0.0f, 0.0f, 0.0f));
 
         // check and call events and swap the buffers
@@ -236,15 +246,12 @@ GLuint loadTexture(const std::string& texturePath)
 {
     GLuint texId;
 
-    // Gera o identificador da textura na memória
     glGenTextures(1, &texId);
     glBindTexture(GL_TEXTURE_2D, texId);
 
-    //Configuração do parâmetro WRAPPING nas coords s e t
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-    //Confirugação do parâmetro FILTERING na minificação e magnificação da textura
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 

@@ -30,14 +30,15 @@ void Player::initialize(GLuint slowTexId_, GLuint forwardTexId_, GLuint backward
     this->hurtInterval = 1;
     this->cannotGetHurtInterval = 1.5;
     this->isHurt = false;
-    this->lives = 2;
+    this->lives = 3;
+    this->dead = false;
 
     this->setVAO();
 }
 
 void Player::update() {
     if (isHurt) {
-        if (glfwGetTime() - this->lastHurtTime < this->hurtInterval) {
+        if (glfwGetTime() - this->lastHurtTime < this->hurtInterval || dead) {
             if (glfwGetTime() - this->lastMovementUpdateTime >= this->movementInterval) {
                 this->lastMovementUpdateTime = glfwGetTime();
                 this->moveLeft(0.5f);
@@ -58,7 +59,7 @@ void Player::moveRight(float distance) {
 }
 
 void Player::moveLeft(float distance) {
-    if (this->pos.x - (this->width/2) > 0) {
+    if (this->pos.x - (this->width/2) > 0 || this->dead) {
         this->pos.x -= distance;
     }
 }
@@ -76,7 +77,7 @@ void Player::moveDown(float distance) {
 }
 
 void Player::move(float distance, std::unordered_map<int, bool>& wasdMap) {
-    if (glfwGetTime() - this->lastMovementUpdateTime > this->movementInterval && !isHurt) {
+    if (glfwGetTime() - this->lastMovementUpdateTime > this->movementInterval && !isHurt && !dead) {
         this->lastMovementUpdateTime = glfwGetTime();
         // Changes when keys pressed
         if (wasdMap[GLFW_KEY_W]) {
@@ -128,7 +129,7 @@ void Player::setBackward() {
 
 void Player::setHurt() {
     // Checks if player was just hurt - prevents consecutive damage to same obstacle
-    if (!isHurt && glfwGetTime() - this->lastHurtTime > this->cannotGetHurtInterval) {
+    if (!isHurt && !dead && glfwGetTime() - this->lastHurtTime > this->cannotGetHurtInterval) {
         this->isHurt = true;
         this->changeTexture(this->hurtTexId, 1, 2, 0, 0.15);
         this->lastHurtTime = glfwGetTime();
@@ -138,5 +139,16 @@ void Player::setHurt() {
 
 int Player::getLives() const {
     return this->lives;
+}
+
+void Player::setDead() {
+    if (!this->dead) {
+        this->dead = true;
+        this->setHurt();
+    }
+}
+
+bool Player::isDead() const {
+    return this->dead;
 }
 
