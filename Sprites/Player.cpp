@@ -27,7 +27,8 @@ void Player::initialize(GLuint slowTexId_, GLuint forwardTexId_, GLuint backward
     this->animationInterval = animationInterval_;
     this->movementInterval = movementInterval_;
     this->lastHurtTime = glfwGetTime();
-    this->hurtInterval = 0.5;
+    this->hurtInterval = 1;
+    this->cannotGetHurtInterval = 1.5;
     this->isHurt = false;
 
     this->setVAO();
@@ -125,7 +126,8 @@ void Player::setBackward() {
 }
 
 void Player::setHurt() {
-    if (!isHurt) {
+    // Checks if player was just hurt - prevents consecutive damage to same obstacle
+    if (!isHurt && glfwGetTime() - this->lastHurtTime > this->cannotGetHurtInterval) {
         this->isHurt = true;
         this->changeTexture(this->hurtTexId, 1, 2, 0, 0.15);
         this->lastHurtTime = glfwGetTime();

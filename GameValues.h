@@ -2,6 +2,6 @@
 #ifndef LEARNOPENGL_GAMEVALUES_H
 #define LEARNOPENGL_GAMEVALUES_H
 
-const float playerMoveSpeed = 2.0f;
+const float playerMoveSpeed = 3.0f;
 
 #endif //LEARNOPENGL_GAMEVALUES_H

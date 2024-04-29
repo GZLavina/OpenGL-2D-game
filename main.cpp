@@ -65,15 +65,34 @@ int main() {
 
     Shader shader("../shaders/texture.vert", "../shaders/animatedTexture.frag");
 
-    GLuint playerSlowTexId = loadTexture("../Textures/Characters/Shark/Walk.png");
-    GLuint playerForwardTexId = loadTexture("../Textures/Characters/Shark/Attack.png");
-    GLuint playerBackwardsTexId = loadTexture("../Textures/Characters/Shark/Idle.png");
-    GLuint playerHurtTexId = loadTexture("../Textures/Characters/Shark/Hurt.png");
-    GLuint fishTexId = loadTexture("../Textures/Fish/4.png");
-    GLuint trashTexId = loadTexture("../Textures/Objects/trash.png");
+    GLuint playerSlowTexId = loadTexture("../Textures/Characters/Shark/Walk4xCropped.png");
+    GLuint playerForwardTexId = loadTexture("../Textures/Characters/Shark/Attack4xCropped.png");
+    GLuint playerBackwardsTexId = loadTexture("../Textures/Characters/Shark/Idle4xCropped.png");
+    GLuint playerHurtTexId = loadTexture("../Textures/Characters/Shark/Hurt4xCropped.png");
+
+    GLuint redTrashTexId = loadTexture("../Textures/Objects/RedTinCan.png");
+    GLuint greenTrashTexId = loadTexture("../Textures/Objects/GreenTinCan.png");
+    GLuint blueTrashTexId = loadTexture("../Textures/Objects/BlueTinCan.png");
+    GLuint purpleTrashTexId = loadTexture("../Textures/Objects/PurpleTinCan.png");
+    // store different textures in a vector
+    // passed as pointer to instances of Trash to pick a new texture when respawning
+    std::vector<GLuint> trashTexIds = {redTrashTexId, greenTrashTexId, blueTrashTexId, purpleTrashTexId};
+
+    GLuint blueFishTexId = loadTexture("../Textures/Fish/BlueFish4xCropped.png");
+    GLuint brownFishTexId = loadTexture("../Textures/Fish/BrownFish4xCroppedCentered.png");
+    GLuint greenFishTexId = loadTexture("../Textures/Fish/GreenFish4xCropped.png");
+    GLuint uglyFishTexId = loadTexture("../Textures/Fish/UglyFish4xCropped.png");
+    // same as with trash textures but different sizes require different scales,
+    // so we keep scale vector in a map
+    std::unordered_map<GLuint,glm::vec3> fishTexIdToScaleMap = {
+            {blueFishTexId, glm::vec3(80.0f, 34.5f, 1.0f)},
+            {brownFishTexId, glm::vec3(80.0f, 49.2f, 1.0f)},
+            {greenFishTexId, glm::vec3(80.0f, 45.0f, 1.0f)},
+            {uglyFishTexId, glm::vec3(100.0f, 40.68f, 1.0f)},
+    };
 
     std::vector<GLuint> texIdVector;
-    getBackgroundTexIds(1, &texIdVector);
+    getBackgroundTexIds(4, &texIdVector);
     std::vector<BackgroundLayer*> bgLayers;
     int numberOfLayers = (int) texIdVector.size();
     for (int i = 0; i < numberOfLayers; ++i) {
@@ -87,22 +106,22 @@ int main() {
     Player player;
     player.setShader(&shader);
     player.initialize(playerSlowTexId, playerForwardTexId, playerBackwardsTexId, playerHurtTexId,
-                      glm::vec3(200.0, 450.0, 0.0), glm::vec3(100.0, 100.0, 1.0), 0.0,
+                      glm::vec3(200.0, 450.0, 0.0), glm::vec3(160.0, 80.0, 1.0), 0.0,
                       screenWidth, screenHeight, 1, 4, 0, 0.15, 0.01);
 
     std::vector<Fish*> fishes;
     for (int i = 0; i < 5; ++i) {
         auto *fish = new Fish();
         fish->setShader(&shader);
-        fish->initialize(fishTexId, glm::vec3(52.0, 16.0, 1.0), 0.0, 3.0, screenWidth, screenHeight, 1, 2, 0, 0.15, 0.01);
+        fish->initialize(blueFishTexId, glm::vec3(52.0, 16.0, 1.0), 0.0, 2.0, screenWidth, screenHeight, 1, 2, 0, 0.15, 0.01, &fishTexIdToScaleMap);
         fishes.push_back(fish);
     }
 
     std::vector<Trash*> trashVector;
-    for (int i = 0; i < 10; ++i) {
+    for (int i = 0; i < 15; ++i) {
         auto *trash = new Trash();
         trash->setShader(&shader);
-        trash->initialize(trashTexId, 0.0, screenWidth, screenHeight, 0.01);
+        trash->initialize(redTrashTexId, 0.0, screenWidth, screenHeight, 0.01, &trashTexIds);
         trashVector.push_back(trash);
     }
 
@@ -129,15 +148,17 @@ int main() {
         glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        for (auto & bgLayer : bgLayers) {
-            bgLayer->draw();
+        // Draw all but the closest to the screen,
+        // which looks better if it appears on top of other elements
+        for (int i = 0; i < bgLayers.size() - 1; ++i) {
+            bgLayers[i]->draw();
         }
 
         player.draw();
 
         for (auto & vectorFish : fishes) {
             if (player.collidesWith(vectorFish)) {
-                vectorFish->resetPosition();
+                vectorFish->reset();
                 playerScore++;
             }
             vectorFish->draw();
@@ -149,6 +170,9 @@ int main() {
             }
             trash->draw();
         }
+
+        //draw last layer
+        bgLayers.back()->draw();
 
         // check and call events and swap the buffers
         glfwSwapBuffers(window);

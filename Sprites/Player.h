@@ -28,6 +28,7 @@ private:
     GLuint hurtTexId;
     double hurtInterval;
     double lastHurtTime;
+    double cannotGetHurtInterval;
     bool isHurt;
 };
 
