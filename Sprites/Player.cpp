@@ -30,6 +30,7 @@ void Player::initialize(GLuint slowTexId_, GLuint forwardTexId_, GLuint backward
     this->hurtInterval = 1;
     this->cannotGetHurtInterval = 1.5;
     this->isHurt = false;
+    this->lives = 2;
 
     this->setVAO();
 }
@@ -131,6 +132,11 @@ void Player::setHurt() {
         this->isHurt = true;
         this->changeTexture(this->hurtTexId, 1, 2, 0, 0.15);
         this->lastHurtTime = glfwGetTime();
+        this->lives -= 1;
     }
+}
+
+int Player::getLives() const {
+    return this->lives;
 }
 
