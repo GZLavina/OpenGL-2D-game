@@ -16,9 +16,6 @@
 #include <vector>
 #include <filesystem>
 #include "GameValues.h"
-#include <ft2build.h>
-#include FT_FREETYPE_H
-#include "TextRenderer.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
@@ -69,26 +66,27 @@ int main() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    Shader shader("../shaders/texture.vert", "../shaders/animatedTexture.frag");
-    Shader textShader("../shaders/text.vert", "../shaders/text.frag");
+    char path1[] = "../../shaders/texture.vert";
+    char path2[] = "../../shaders/animatedTexture.frag";
+    Shader shader(path1, path2);
 
-    GLuint playerSlowTexId = loadTexture("../Textures/Characters/Shark/Walk4xCropped.png");
-    GLuint playerForwardTexId = loadTexture("../Textures/Characters/Shark/Attack4xCropped.png");
-    GLuint playerBackwardsTexId = loadTexture("../Textures/Characters/Shark/Idle4xCropped.png");
-    GLuint playerHurtTexId = loadTexture("../Textures/Characters/Shark/Hurt4xCropped.png");
+    GLuint playerSlowTexId = loadTexture("../../Textures/Characters/Shark/Walk4xCropped.png");
+    GLuint playerForwardTexId = loadTexture("../../Textures/Characters/Shark/Attack4xCropped.png");
+    GLuint playerBackwardsTexId = loadTexture("../../Textures/Characters/Shark/Idle4xCropped.png");
+    GLuint playerHurtTexId = loadTexture("../../Textures/Characters/Shark/Hurt4xCropped.png");
 
-    GLuint redTrashTexId = loadTexture("../Textures/Objects/RedTinCan.png");
-    GLuint greenTrashTexId = loadTexture("../Textures/Objects/GreenTinCan.png");
-    GLuint blueTrashTexId = loadTexture("../Textures/Objects/BlueTinCan.png");
-    GLuint purpleTrashTexId = loadTexture("../Textures/Objects/PurpleTinCan.png");
+    GLuint redTrashTexId = loadTexture("../../Textures/Objects/RedTinCan.png");
+    GLuint greenTrashTexId = loadTexture("../../Textures/Objects/GreenTinCan.png");
+    GLuint blueTrashTexId = loadTexture("../../Textures/Objects/BlueTinCan.png");
+    GLuint purpleTrashTexId = loadTexture("../../Textures/Objects/PurpleTinCan.png");
     // store different textures in a vector
     // passed as pointer to instances of Trash to pick a new texture when respawning
     std::vector<GLuint> trashTexIds = {redTrashTexId, greenTrashTexId, blueTrashTexId, purpleTrashTexId};
 
-    GLuint blueFishTexId = loadTexture("../Textures/Fish/BlueFish4xCropped.png");
-    GLuint brownFishTexId = loadTexture("../Textures/Fish/BrownFish4xCroppedCentered.png");
-    GLuint greenFishTexId = loadTexture("../Textures/Fish/GreenFish4xCropped.png");
-    GLuint uglyFishTexId = loadTexture("../Textures/Fish/UglyFish4xCropped.png");
+    GLuint blueFishTexId = loadTexture("../../Textures/Fish/BlueFish4xCropped.png");
+    GLuint brownFishTexId = loadTexture("../../Textures/Fish/BrownFish4xCroppedCentered.png");
+    GLuint greenFishTexId = loadTexture("../../Textures/Fish/GreenFish4xCropped.png");
+    GLuint uglyFishTexId = loadTexture("../../Textures/Fish/UglyFish4xCropped.png");
     // same as with trash textures but different sizes require different scales,
     // so we keep scale vector in a map
     std::unordered_map<GLuint,glm::vec3> fishTexIdToScaleMap = {
@@ -98,7 +96,7 @@ int main() {
             {uglyFishTexId, glm::vec3(100.0f, 40.68f, 1.0f)},
     };
 
-    GLuint heartTexId = loadTexture("../Textures/Objects/heart2.png");
+    GLuint heartTexId = loadTexture("../../Textures/Objects/heart2.png");
 
     std::vector<GLuint> texIdVector;
     getBackgroundTexIds(1, &texIdVector);
@@ -140,9 +138,6 @@ int main() {
                          glm::vec3(0.05f * (float) screenWidth, (float) screenHeight - (0.08f * (float) screenHeight), 0.0f),
                          glm::vec3(80.0f, 80.0f, 1.0f), 0.0, screenWidth, screenHeight, 1, 1, 0, 1, 1);
 
-    TextRenderer textRenderer(textShader);
-    textRenderer.load("../Fonts/MAIAN.TTF", 56);
-
     glActiveTexture(GL_TEXTURE0);
 
     glm::mat4 projection = glm::ortho(0.0f,1600.0f,0.0f,900.0f,-1.0f,1.0f);
@@ -150,10 +145,6 @@ int main() {
     shader.use();
     shader.setMat4("projection", glm::value_ptr(projection));
     shader.setInt("texBuffer", 0);
-
-    textShader.use();
-    textShader.setMat4("projection", glm::value_ptr(projection));
-    textShader.setInt("texBuffer", 0);
 
     // player score does not need to be calculated by the player object
     int playerScore = 0;
@@ -169,8 +160,6 @@ int main() {
 
         glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-
-        shader.use();
 
         // Draw all except for the closest to the screen,
         // which looks better if it appears on top of other elements
@@ -200,16 +189,9 @@ int main() {
 
         heartIcon.draw();
 
-        //Draw text
-        textShader.use();
-
         if (player.getLives() <= 0) {
             player.setDead();
-            textRenderer.renderText("GAME OVER", ((float) screenWidth / 2.0f) - ((float) screenWidth * 0.11f), (float) screenHeight / 2.0f, 1.0, glm::vec3(0.0f, 0.0f, 0.0f));
         }
-
-        textRenderer.renderText("x " + std::to_string(player.getLives()), 0.09f * (float) screenWidth, (float) screenHeight - (0.1f * (float) screenHeight), 1.0f, glm::vec3(0.0f, 0.0f, 0.0f));
-        textRenderer.renderText("Score: " + std::to_string(playerScore), (float) screenWidth - (0.15f * (float) screenWidth), (float) screenHeight - (0.1f * (float) screenHeight), 1.0f, glm::vec3(0.0f, 0.0f, 0.0f));
 
         // check and call events and swap the buffers
         glfwSwapBuffers(window);
@@ -283,7 +265,7 @@ GLuint loadTexture(const std::string& texturePath)
 
 void getBackgroundTexIds(int backgroundFolder, std::vector<GLuint> *texIdVector) {
     for (auto const& dir_entry : std::filesystem::directory_iterator
-        {"../Textures/Backgrounds/" + std::to_string(backgroundFolder) + "_game_background/layers"}) {
+        {"../../Textures/Backgrounds/" + std::to_string(backgroundFolder) + "_game_background/layers"}) {
 
         texIdVector->push_back(loadTexture(dir_entry.path().string()));
     }

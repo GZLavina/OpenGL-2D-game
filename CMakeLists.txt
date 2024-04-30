@@ -1,8 +1,6 @@
 cmake_minimum_required(VERSION 3.27)
 project(learnOpenGL)
 
-find_package(Freetype REQUIRED)
-
 set(CMAKE_CXX_STANDARD 20)
 set(USER_HOME_DIRECTORY $ENV{USERPROFILE})
 
@@ -25,7 +23,5 @@ add_executable(learnOpenGL main.cpp
         Sprites/Trash.h
         Sprites/BackgroundLayer.cpp
         Sprites/BackgroundLayer.h
-        TextRenderer.cpp
-        TextRenderer.h
 )
-target_link_libraries(learnOpenGL glfw3 freetype)
+target_link_libraries(learnOpenGL glfw3)
