@@ -1,12 +1,14 @@
 # Trabalho GA - Processamento Gráfico
-### Gustavo Lavina e Vitor Goulart
 
-# O Jogo
+## Gustavo Lavina e Vitor Goulart
+
+## O Jogo
+
 Este trabalho é uma implementação de um jogo 2D em C++ utilizando OpenGL. O objetivo do jogador é controlar o golfinho para coletar o máximo de peixes possível para aumentar seu **SCORE** enquanto evita as latas de lixo que caem na água. O jogador possui 3 vidas, ao colidir com o lixo o jogador perde 1 vida e quando perder todas as vidas o jogo acaba.
 
-# Organização do Código
+## Organização do Código
 
-## Estrutura de Diretórios
+### Estrutura de Diretórios
 
 - Dependencies: Armazena os headers e os arquivos .lib das bibliotecas utilizadas;
 - Fonts: Armazena as fontes que podem ser carregadas pelo TextRenderer, as fontes devem possuir ser arquivos `.ttf`;
@@ -14,7 +16,7 @@ Este trabalho é uma implementação de um jogo 2D em C++ utilizando OpenGL. O o
 - Sprites: Armazena as classes de sprites utilizadas;
 - Textures: Armazena as texturas e os *spritesheets* utilizados.
 
-## Classes
+### Classes
 
 - BackgroundLayer: Classe para gerenciar o background e controlar animações para efeito **PARALAX**;
 - Fish: Classe para gerenciar os peixes coletáveis no jogo, contendo funções para o controle da aniamção e do surgimento dos peixes;
