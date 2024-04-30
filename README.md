@@ -6,6 +6,10 @@
 
 Este trabalho é uma implementação de um jogo 2D em C++ utilizando OpenGL. O objetivo do jogador é controlar o golfinho para coletar o máximo de peixes possível para aumentar seu **SCORE** enquanto evita as latas de lixo que caem na água. O jogador possui 3 vidas, ao colidir com o lixo o jogador perde 1 vida e quando perder todas as vidas o jogo acaba.
 
+## Instruções
+
+Até o momento, não temos uma solução consistente para executar essa versão do jogo. A *branch* no-freetype deste repositório permite uma execução simples e rápida, mas sem os recursos de texto providos pela biblioteca FreeType. Ainda estamos trabalhando para corrigir esse problema.
+
 ## Organização do Código
 
 ### Estrutura de Diretórios
