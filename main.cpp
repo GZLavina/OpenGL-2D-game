@@ -69,26 +69,26 @@ int main() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    Shader shader("../shaders/texture.vert", "../shaders/animatedTexture.frag");
-    Shader textShader("../shaders/text.vert", "../shaders/text.frag");
+    Shader shader("../../shaders/texture.vert", "../../shaders/animatedTexture.frag");
+    Shader textShader("../../shaders/text.vert", "../../shaders/text.frag");
 
-    GLuint playerSlowTexId = loadTexture("../Textures/Characters/Shark/Walk4xCropped.png");
-    GLuint playerForwardTexId = loadTexture("../Textures/Characters/Shark/Attack4xCropped.png");
-    GLuint playerBackwardsTexId = loadTexture("../Textures/Characters/Shark/Idle4xCropped.png");
-    GLuint playerHurtTexId = loadTexture("../Textures/Characters/Shark/Hurt4xCropped.png");
+    GLuint playerSlowTexId = loadTexture("../../Textures/Characters/Shark/Walk4xCropped.png");
+    GLuint playerForwardTexId = loadTexture("../../Textures/Characters/Shark/Attack4xCropped.png");
+    GLuint playerBackwardsTexId = loadTexture("../../Textures/Characters/Shark/Idle4xCropped.png");
+    GLuint playerHurtTexId = loadTexture("../../Textures/Characters/Shark/Hurt4xCropped.png");
 
-    GLuint redTrashTexId = loadTexture("../Textures/Objects/RedTinCan.png");
-    GLuint greenTrashTexId = loadTexture("../Textures/Objects/GreenTinCan.png");
-    GLuint blueTrashTexId = loadTexture("../Textures/Objects/BlueTinCan.png");
-    GLuint purpleTrashTexId = loadTexture("../Textures/Objects/PurpleTinCan.png");
+    GLuint redTrashTexId = loadTexture("../../Textures/Objects/RedTinCan.png");
+    GLuint greenTrashTexId = loadTexture("../../Textures/Objects/GreenTinCan.png");
+    GLuint blueTrashTexId = loadTexture("../../Textures/Objects/BlueTinCan.png");
+    GLuint purpleTrashTexId = loadTexture("../../Textures/Objects/PurpleTinCan.png");
     // store different textures in a vector
     // passed as pointer to instances of Trash to pick a new texture when respawning
     std::vector<GLuint> trashTexIds = {redTrashTexId, greenTrashTexId, blueTrashTexId, purpleTrashTexId};
 
-    GLuint blueFishTexId = loadTexture("../Textures/Fish/BlueFish4xCropped.png");
-    GLuint brownFishTexId = loadTexture("../Textures/Fish/BrownFish4xCroppedCentered.png");
-    GLuint greenFishTexId = loadTexture("../Textures/Fish/GreenFish4xCropped.png");
-    GLuint uglyFishTexId = loadTexture("../Textures/Fish/UglyFish4xCropped.png");
+    GLuint blueFishTexId = loadTexture("../../Textures/Fish/BlueFish4xCropped.png");
+    GLuint brownFishTexId = loadTexture("../../Textures/Fish/BrownFish4xCroppedCentered.png");
+    GLuint greenFishTexId = loadTexture("../../Textures/Fish/GreenFish4xCropped.png");
+    GLuint uglyFishTexId = loadTexture("../../Textures/Fish/UglyFish4xCropped.png");
     // same as with trash textures but different sizes require different scales,
     // so we keep scale vector in a map
     std::unordered_map<GLuint,glm::vec3> fishTexIdToScaleMap = {
@@ -98,7 +98,7 @@ int main() {
             {uglyFishTexId, glm::vec3(100.0f, 40.68f, 1.0f)},
     };
 
-    GLuint heartTexId = loadTexture("../Textures/Objects/heart2.png");
+    GLuint heartTexId = loadTexture("../../Textures/Objects/heart2.png");
 
     std::vector<GLuint> texIdVector;
     getBackgroundTexIds(1, &texIdVector);
@@ -141,7 +141,7 @@ int main() {
                          glm::vec3(80.0f, 80.0f, 1.0f), 0.0, screenWidth, screenHeight, 1, 1, 0, 1, 1);
 
     TextRenderer textRenderer(textShader);
-    textRenderer.load("../Fonts/MAIAN.TTF", 56);
+    textRenderer.load("../../Fonts/MAIAN.TTF", 56);
 
     glActiveTexture(GL_TEXTURE0);
 
@@ -283,7 +283,7 @@ GLuint loadTexture(const std::string& texturePath)
 
 void getBackgroundTexIds(int backgroundFolder, std::vector<GLuint> *texIdVector) {
     for (auto const& dir_entry : std::filesystem::directory_iterator
-        {"../Textures/Backgrounds/" + std::to_string(backgroundFolder) + "_game_background/layers"}) {
+        {"../../Textures/Backgrounds/" + std::to_string(backgroundFolder) + "_game_background/layers"}) {
 
         texIdVector->push_back(loadTexture(dir_entry.path().string()));
     }

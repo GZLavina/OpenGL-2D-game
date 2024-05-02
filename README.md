@@ -8,7 +8,9 @@ Este trabalho é uma implementação de um jogo 2D em C++ utilizando OpenGL. O o
 
 ## Instruções
 
-Até o momento, não temos uma solução consistente para executar essa versão do jogo. A *branch* no-freetype deste repositório permite uma execução simples e rápida, mas sem os recursos de texto providos pela biblioteca FreeType. Ainda estamos trabalhando para corrigir esse problema.
+- Após clonar o repositório, o que pode ser feito diretamente pela IDE (recomenda-se o Visual Studio Code), configurar o CMake para utilizar o compilador amd64 e clicar em "Build". Depois, basta executar.
+- Dependendo da localização do executável gerado pelo CMake, é possível que os caminhos de shaders e texturas estejam incorretos. No entanto, executando pelo VSCode, os caminhos devem estar corretos.
+- Em caso de erro relacionado à biblioteca FreeType, usar a versão da branch "no-freetype".
 
 ## Organização do Código
 
