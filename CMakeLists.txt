@@ -1,15 +1,17 @@
 cmake_minimum_required(VERSION 3.27)
 project(learnOpenGL)
 
+list(APPEND CMAKE_PREFIX_PATH Dependencies/Freetype)
+include_directories(Dependencies/Include)
+link_directories(Dependencies/Lib)
+
 find_package(Freetype REQUIRED)
 
 set(CMAKE_CXX_STANDARD 20)
 set(USER_HOME_DIRECTORY $ENV{USERPROFILE})
 
-include_directories(Dependencies/Include)
-link_directories(Dependencies/Lib)
-
-add_executable(learnOpenGL main.cpp
+add_executable(learnOpenGL
+        main.cpp
         glad.c
         shader.h
         Sprites/Sprite.h
@@ -28,4 +30,4 @@ add_executable(learnOpenGL main.cpp
         TextRenderer.cpp
         TextRenderer.h
 )
-target_link_libraries(learnOpenGL glfw3 freetype)
+target_link_libraries(learnOpenGL glfw3 Freetype::Freetype)
